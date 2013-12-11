@@ -348,7 +348,7 @@ if [ $FETCH_CA_CERT_OK -eq 0 ]; then
     fi
     mv ${ORG_CA_CERT_FILE} /usr/share/rhn/
     cp /etc/sysconfig/rhn/up2date /etc/sysconfig/rhn/up2date.bak
-    sed -e "s/^\(sslCACert=\/usr\/share\/rhn\/\)/\1${ORG_CA_CERT_FILE}/g" up2date
+    sed -e "s/^\(sslCACert=\/usr\/share\/rhn\/\)/\1${ORG_CA_CERT_FILE}/g" /etc/sysconfig/rhn/up2date
 fi
 
 echo

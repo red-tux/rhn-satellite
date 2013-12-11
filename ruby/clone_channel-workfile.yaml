@@ -1,0 +1,65 @@
+--- %YAML:1.0
+rhel-x86_64-server-5:
+  children:
+  - rhn-tools-rhel-x86_64-server-5
+  upstream: :rhn
+
+rhn-tools-rhel-x86_64-server-5:
+  upstream: :rhn
+
+dev-rhel5-clone-x86_64:
+  children:
+  - dev-rhel5-rhn_tools-clone-x86_64
+  upstream: rhel-x86_64-server-5
+
+dev-rhel5-rhn_tools-clone-x86_64:
+  upstream: rhn-tools-rhel-x86_64-server-5
+
+qa-rhel5-clone-x86_64:
+  children:
+   - qa-rhel5-rhn_tools-clone-x86_64:
+  upstream: dev-rhel5-clone-x86_64
+
+qa-rhel5-rhn_tools-clone-x86_64:
+  upstream: dev-rhel5-rhn_tools-clone-x86_64
+
+prod-rhel5-clone-x86_64:
+  children:
+   - prod-rhel5-rhn_tools-clone-x86_64
+  upstream: qa-rhel5-clone-x86_64
+
+prod-rhel5-rhn_tools-clone-x86_64:
+  upstream: qa-rhel5-rhn_tools-clone-x86_64
+
+rhel-x86_64-server-6:
+  children:
+   - rhn-tools-rhel-x86_64-server-6
+  upstream: :rhn
+
+rhn-tools-rhel-x86_64-server-6:
+  upstream: :rhn
+
+dev-rhel6-clone-x86_64:
+  children:
+   - dev-rhel6-rhn_tools-clone-x86_64
+  upstream: rhel-x86_64-server-6
+
+dev-rhel6-rhn_tools-clone-x86_64:
+  upstream: rhn-tools-rhel-x86_64-server-6
+
+qa-rhel6-clone-x86_64:
+  children:
+   - qa-rhel6-rhn_tools-clone-x86_64
+  upstream: dev-rhel6-clone-x86_64
+
+qa-rhel6-rhn_tools-clone-x86_64:
+  upstream: dev-rhel6-rhn_tools-clone-x86_64
+
+prod-rhel6-clone-x86_64:
+  children:
+   - prod-rhel6-rhn_tools-clone-x86_64
+  upstream: qa-rhel6-clone-x86_64
+
+prod-rhel6-rhn_tools-clone-x86_64:
+  upstream: qa-rhel6-rhn_tools-clone-x86_64
+

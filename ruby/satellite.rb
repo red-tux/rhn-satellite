@@ -31,6 +31,9 @@ require 'digest'
 
 class Satellite < XMLRPC::Client
 
+  class InvalidFunctionCall < XMLRPC::FaultException
+  end
+
   attr_accessor :cache_session
   def initialize(host="localhost",path="/rpc/api")
     #new(host=nil, path=nil, port=nil, proxy_host=nil, proxy_port=nil, user=nil, password=nil, use_ssl=nil, timeout=nil)
@@ -62,17 +65,25 @@ class Satellite < XMLRPC::Client
   alias :call_super :call
 
   def call(method, *params)
-    if @session.nil?
-      if params.empty?
-        call_super(method)
+    begin
+      if @session.nil?
+        if params.empty?
+          call_super(method)
+        else
+          call_super(method,*params)
+        end
       else
-        call_super(method,*params)
+        if params.empty?
+          call_super(method,@session)
+        else
+          call_super(method, @session, *params)
+        end
       end
-    else
-      if params.empty?
-        call_super(method,@session)
+    rescue XMLRPC::FaultException => e
+      if e.message =~ /The specified handler cannot be found/
+        raise InvalidFunctionCall.new(e.faultCode,"Invalid function call: #{method}")
       else
-        call_super(method, @session, *params)
+        raise e
       end
     end
   end
@@ -80,17 +91,25 @@ class Satellite < XMLRPC::Client
   alias :call_async_super :call_async
 
   def call_async(method, *params)
-    if @session.nil?
-      if params.empty?
-        call_async_super(method)
+    begin
+      if @session.nil?
+        if params.empty?
+          call_async_super(method)
+        else
+          call_async_super(method,*params)
+        end
       else
-        call_async_super(method,*params)
+        if params.empty?
+          call_async_super(method,@session)
+        else
+          call_async_super(method, @session, *params)
+        end
       end
-    else
-      if params.empty?
-        call_async_super(method,@session)
+    rescue XMLRPC::FaultException => e
+      if e.message =~ /The specified handler cannot be found/
+        raise InvalidFunctionCall.new(e.faultCode,"Invalid function call: #{method}")
       else
-        call_async_super(method, @session, *params)
+        raise e
       end
     end
   end
@@ -126,12 +145,11 @@ class Satellite < XMLRPC::Client
     end
     if @session.nil?
       pass=get_password("Password for #{user}: ") if pass.nil?
-      @session=call_super("auth.login",user,pass,1)
+      @session=call_super("auth.login",user,pass)
     end
     if @cache_session
       File.open(path,'w') {|f| 
         f.puts(@session)
-        f.close
       }
     end
   end
